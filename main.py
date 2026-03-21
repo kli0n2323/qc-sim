@@ -8,7 +8,7 @@ def build_state():
     # - only two state real num qubits for now
     amp0 = complex(input("- [ Enter the amplitude for |0>: ] "))
     amp1 = complex(input("- [ Enter the amplitude for |1>: ] "))
-    gen_state = [amp0, amp1]
+    gen_state = np.array([amp0, amp1])
     return gen_state
 
 
@@ -20,9 +20,21 @@ def check_state_validity(gen_state):
     validity = np.abs(norm - 1)
 
     if validity < 10**(-4):
-        print(f"[ VALID ] | Normalizes to {norm}")
+        print(f"[ VALID ] | Measures at {norm}")
+        return True, norm
     else:
-        print(f"[ INVALID ] | Normalizes to {norm}")
+        print(f"[ INVALID ] | Measures at {norm}")
+        return False, norm
+    
+def normalize_state(gen_state, validity, norm):
+    if norm == 0.0:
+        print("-- [ X ] Zero vector cannot be normalized.")
+    elif validity is True:
+        print("-- [ ! ] State is already normalized.")
+    else:
+        normalized = (1/np.sqrt(norm)) * gen_state
+        print(f"[ NORMALIZED STATE: ] {normalized}")
+        return normalized
 
 
 # ---- WRAPPER FUNCTIONS ----
@@ -31,19 +43,37 @@ def action_one():
     validity = check_state_validity(state)
     return validity
 
+def action_two():
+    state = build_state()
+    validity, norm = check_state_validity(state)
+    normalize = normalize_state(state, validity, norm)
+    return normalize
+
 
 # ---- IO ----
 def ui():
     user_options = {
-        1: action_one
+        1: action_one,
+        2: action_two
     }
 
     print("----- QUANTUM COMPUTING SIMULATOR -----")
-    print("[ OPTIONS ] | 1: Check state validity | More to be added soon:)")
-    inp = int(input("- [ Input number to select action: ] "))
+    print("[ OPTIONS ] | 1: Check state validity | 2: Normalize invalid state | Exit: Quit program | " \
+    "More to be added soon:)")
+    inp = input("- [ Input number to select action: ] ")
 
+    if inp.lower() == 'exit':
+        sys.exit()
+    elif not inp.isnumeric():
+        print("-- [ X ] Please enter a number.")
+        print("")
+        ui()
+
+    inp = int(inp)
     if inp not in user_options.keys():
-        raise ValueError("Please select a number from the given list.")
+        print("-- [ X ] Please select a number from the given list.")
+        print("")
+        ui()
 
     user_options[inp]()
     reboot()
@@ -51,7 +81,8 @@ def ui():
 
 def reboot():
     print('')
-    resp = input("- [ ! ] Run another test? Y/N: ")
+    resp = input("[ ! ] Run another test? Y/N: ")
+    print('')
     if resp.lower() == 'y':
         ui()
     elif resp.lower() == 'n':
