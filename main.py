@@ -17,9 +17,9 @@ def check_state_validity(gen_state):
     norm_zero = np.abs(gen_state[0]) ** 2
     norm_one = np.abs(gen_state[1]) ** 2
     norm = norm_zero + norm_one
-    validity = np.abs(norm - 1)
+    dist_from_one = np.abs(norm - 1)
 
-    if validity < 10**(-4):
+    if dist_from_one < 10**(-4):
         print(f"[ VALID ] | Measures at {norm}")
         return True, norm
     else:
@@ -58,7 +58,7 @@ def ui():
     }
 
     print("----- QUANTUM COMPUTING SIMULATOR -----")
-    print("[ OPTIONS ] | 1: Check state validity | 2: Normalize invalid state | Exit: Quit program | " \
+    print("[ OPTIONS ] | 1: Check state validity | 2: Normalize invalid state | Exit | " \
     "More to be added soon:)")
     inp = input("- [ Input number to select action: ] ")
 
