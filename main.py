@@ -1,11 +1,15 @@
 import numpy as np
 import sys
 
+# --- SIM STATE ----
+class activeSession:
+    def __init__(self, amp0, amp1):
+        self.amp0 = amp0
+        self.amp1 = amp1
+        gen_state = np.array([amp0, amp1])
+
 # ---- BUILDER FUNCTIONS ----
 def build_state():
-    zero = [1,0]
-    one = [0,1]
-    # - only two state real num qubits for now
     amp0 = complex(input("- [ Enter the amplitude for |0>: ] "))
     amp1 = complex(input("- [ Enter the amplitude for |1>: ] "))
     gen_state = np.array([amp0, amp1])
@@ -36,6 +40,9 @@ def normalize_state(gen_state, validity, norm):
         print(f"[ NORMALIZED STATE: ] {normalized}")
         return normalized
 
+def calculate_probability():
+    pass
+
 
 # ---- WRAPPER FUNCTIONS ----
 def action_one():
@@ -46,8 +53,8 @@ def action_one():
 def action_two():
     state = build_state()
     validity, norm = check_state_validity(state)
-    normalize = normalize_state(state, validity, norm)
-    return normalize
+    state = normalize_state(state, validity, norm)
+    return state
 
 
 # ---- IO ----
